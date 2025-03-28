@@ -1,8 +1,20 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 import { ApiError, ApiResponse } from '../types';
 
-// Base URL from API specification
-const BASE_URL = 'https://api.qrservice.com/v1';
+import { Platform } from 'react-native';
+
+// Base URL for the API
+// Using the correct API URL as specified
+const BASE_URL = Platform.select({
+  android: 'https://admin.qdos.bz/api/',
+  ios: 'https://admin.qdos.bz/api/',
+  default: 'https://admin.qdos.bz/api/'
+});
+
+// In a production app, the API key would be stored securely
+// The API key should be provided by the user and stored in secure storage
+// This is a placeholder that will be replaced with the actual key from secure storage
+let API_KEY = ''; // This should be set via a secure method at runtime
 
 // Create axios instance
 const apiClient = axios.create({
@@ -13,41 +25,49 @@ const apiClient = axios.create({
   }
 });
 
-// Get API key from environment
+// Function to get API key
 const getApiKey = (): string => {
-  return process.env.API_KEY || '';
+  // In a real app this might fetch from secure storage
+  return API_KEY;
 };
 
-// Request interceptor for API calls
+// Function to set API key (to be called at app initialization)
+export const setApiKey = (key: string): void => {
+  API_KEY = key;
+};
+
+// Add request interceptor
 apiClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  function(config) {
+    // Add authorization header if API key is available
     const apiKey = getApiKey();
     if (apiKey && config.headers) {
       config.headers.Authorization = `Bearer ${apiKey}`;
     }
     return config;
   },
-  (error: AxiosError) => {
+  function(error) {
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for API calls
+// Add response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
+  function(response) {
     return response;
   },
-  (error: AxiosError) => {
+  function(error) {
+    // Create standardized error object
     const errorResponse: ApiError = {
       code: error.response?.status || 500,
-      message: mapErrorMessage(error)
+      message: getErrorMessage(error)
     };
     return Promise.reject(errorResponse);
   }
 );
 
-// Map error messages based on status codes
-const mapErrorMessage = (error: AxiosError): string => {
+// Helper function to get meaningful error messages
+function getErrorMessage(error: any): string {
   if (!error.response) {
     return 'Network error. Please check your internet connection.';
   }
@@ -66,31 +86,44 @@ const mapErrorMessage = (error: AxiosError): string => {
     default:
       return error.message || 'An unexpected error occurred.';
   }
-};
+}
 
-// Generic request function
-const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
-  try {
-    const response = await apiClient(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// API helper functions
+// API helper methods
 export const api = {
-  get: <T>(url: string, params?: object): Promise<T> => {
-    return request<T>({ method: 'GET', url, params });
+  get: async <T>(url: string, params?: any): Promise<T> => {
+    try {
+      const response = await apiClient.get(url, { params });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
-  post: <T>(url: string, data?: object): Promise<T> => {
-    return request<T>({ method: 'POST', url, data });
+  
+  post: async <T>(url: string, data?: any): Promise<T> => {
+    try {
+      const response = await apiClient.post(url, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
-  put: <T>(url: string, data?: object): Promise<T> => {
-    return request<T>({ method: 'PUT', url, data });
+  
+  put: async <T>(url: string, data?: any): Promise<T> => {
+    try {
+      const response = await apiClient.put(url, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
-  delete: <T>(url: string): Promise<T> => {
-    return request<T>({ method: 'DELETE', url });
+  
+  delete: async <T>(url: string): Promise<T> => {
+    try {
+      const response = await apiClient.delete(url);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 

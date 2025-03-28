@@ -1,8 +1,26 @@
 import { useCallback, useState } from 'react';
-import { useSharedValue } from 'react-native-reanimated';
+import { useSharedValue, runOnJS } from 'react-native-reanimated';
 import type { Camera } from 'react-native-vision-camera';
 import { qrService } from '../api/qrService';
 import { QRCodeDetails } from '../types';
+
+// Define Frame interface for vision-camera
+interface FrameType {
+  width: number;
+  height: number;
+  bytesPerRow: number;
+  detectBarcodes: () => Array<{
+    value: string;
+    format?: string;
+    type?: string;
+    bounds?: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    };
+  }>;
+}
 
 interface UseQRScannerOptions {
   onQRScanned?: (qrData: string) => void;
@@ -63,7 +81,9 @@ export const useQRScanner = (options: UseQRScannerOptions = {}) => {
   }, [isScanning, hasScanned, options]);
 
   // Frame processor for QR code detection
-  const frameProcessor = useCallback((frame) => {
+  // Using any type here due to limitations with VisionCamera types in worklets
+  // TODO: Replace with proper type when VisionCamera types are updated
+  const frameProcessor = useCallback((frame: any) => {
     'worklet';
     
     // Skip processing if not scanning

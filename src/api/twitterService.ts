@@ -13,8 +13,9 @@ export const twitterService = {
    */
   generateTwitterLink: async (qrId: string): Promise<string> => {
     try {
-      const response = await api.get<TwitterLinkResponse>('/twitter/generate-link', {
-        reference_id: qrId
+      // Based on API specification, the endpoint should be '/social/twitter/share-link'
+      const response = await api.get<TwitterLinkResponse>('/social/twitter/share-link', {
+        qr_id: qrId
       });
       return response.twitter_link;
     } catch (error) {

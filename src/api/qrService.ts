@@ -12,7 +12,8 @@ export const qrService = {
    */
   getQRDetails: async (qrId: string): Promise<QRCodeDetails> => {
     try {
-      const response = await api.get<ApiResponse<QRCodeDetails>>(`/qr/details/${qrId}`);
+      // Based on API specification, the endpoint should be '/qr/{id}'
+      const response = await api.get<ApiResponse<QRCodeDetails>>(`/qr/${qrId}`);
       if (response.status === 'success' && response.data) {
         return response.data;
       }
@@ -30,7 +31,8 @@ export const qrService = {
    */
   createQRPost: async (qrData: QRCodeCreateRequest): Promise<string> => {
     try {
-      const response = await api.post<ApiResponse<void>>('/qr/create', qrData);
+      // Based on API specification, the endpoint should be '/qr'
+      const response = await api.post<ApiResponse<void>>('/qr', qrData);
       if (response.status === 'success' && response.message) {
         return response.message;
       }

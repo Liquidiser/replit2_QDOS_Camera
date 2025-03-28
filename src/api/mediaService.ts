@@ -1,7 +1,7 @@
 import { api } from './apiClient';
 import { SignedUrlResponse, MediaFile } from '../types';
 import RNFS from 'react-native-fs';
-import RNBackgroundUpload from 'react-native-background-upload';
+import RNBackgroundUpload, { UploadOptions } from 'react-native-background-upload';
 
 /**
  * Media Service - Handles all media related operations
@@ -13,7 +13,8 @@ export const mediaService = {
    */
   getSignedUrl: async (): Promise<SignedUrlResponse> => {
     try {
-      const response = await api.get<SignedUrlResponse>('/api/media/get-signed-url', {
+      // Based on the API specification, the endpoint for signed URL is '/media/signed-url'
+      const response = await api.get<SignedUrlResponse>('/media/signed-url', {
         'bucket-prefix': 'posts'
       });
       return response;
@@ -37,12 +38,12 @@ export const mediaService = {
       // Get signed URL for upload
       const signedUrlResponse = await mediaService.getSignedUrl();
       
-      // Prepare upload options
-      const options = {
+      // Prepare upload options with proper types from UploadOptions
+      const options: UploadOptions = {
         url: signedUrlResponse.s3url,
         path: mediaFile.uri,
-        method: 'PUT',
-        type: 'raw',
+        method: 'PUT', // Type-safe method
+        type: 'raw',   // Using 'raw' type, not 'multipart' which would require 'field'
         headers: {
           'Content-Type': mediaFile.type === 'photo' ? 'image/jpeg' : 'video/mp4',
         },
@@ -50,14 +51,22 @@ export const mediaService = {
 
       // Start the upload
       return new Promise((resolve, reject) => {
-        RNBackgroundUpload.startUpload({
+        // Include notification options in the original options object
+        const uploadOptions: UploadOptions = {
           ...options,
           notification: {
             enabled: true,
             autoClear: true,
-            title: 'Uploading Media',
-          },
-        }).then((uploadId) => {
+            onProgressTitle: 'Uploading Media',
+            onProgressMessage: 'Your media is being uploaded',
+            onCompleteTitle: 'Upload Complete',
+            onCompleteMessage: 'Your media has been uploaded successfully',
+            onErrorTitle: 'Upload Failed',
+            onErrorMessage: 'There was an error uploading your media'
+          }
+        };
+        
+        RNBackgroundUpload.startUpload(uploadOptions).then((uploadId) => {
           console.log(`Upload started with ID: ${uploadId}`);
           
           // Register for upload events
