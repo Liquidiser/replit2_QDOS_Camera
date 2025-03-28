@@ -64,38 +64,77 @@ fi
 # Create a new build
 echo "Triggering EAS build for Android..."
 echo "======================================================================================="
-echo "EAS build typically takes at least 90 seconds to start. Setting timeout to 120 seconds..."
+echo "EAS build typically takes at least 90 seconds to start in GitHub environments."
+echo "In Replit, we'll start the build in the background and provide guidance on tracking it."
 
-# Use timeout command with fallback to perl for cross-platform compatibility
-if command -v timeout &> /dev/null; then
-  timeout 120s npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive || {
-    echo "Build initiation timed out or failed after waiting 120 seconds."
-    echo "This is normal if running in environments with limited connectivity or resources."
-    echo "The build might still be running in the EAS servers. Check your EAS dashboard."
-    echo "Common issues:"
-    echo "  - Invalid EXPO_TOKEN or authentication problems"
-    echo "  - Project ID not found or incorrect in app.config.js"
-    echo "  - Network connectivity issues"
-    echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
-    exit 1
-  }
-else
-  # Fallback to perl timeout for environments without the timeout command
-  perl -e 'alarm 120; exec @ARGV' npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive || {
-    echo "Build initiation timed out or failed after waiting 120 seconds."
-    echo "This is normal if running in environments with limited connectivity or resources."
-    echo "The build might still be running in the EAS servers. Check your EAS dashboard."
-    echo "Common issues:"
-    echo "  - Invalid EXPO_TOKEN or authentication problems"
-    echo "  - Project ID not found or incorrect in app.config.js"
-    echo "  - Network connectivity issues"
-    echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
-    exit 1
-  }
+# Create a temporary file to store the build ID
+BUILD_ID_FILE=$(mktemp)
+
+# Start EAS build in background and capture its output
+echo "Starting EAS build in the background. This could take 1-2 minutes to initialize..."
+(npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive > "$BUILD_ID_FILE" 2>&1) &
+BUILD_PID=$!
+
+# Display a spinner while waiting for the build to initialize
+echo "Waiting for build initialization..."
+SPINNER="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+SECONDS_PASSED=0
+while kill -0 $BUILD_PID 2>/dev/null && [ $SECONDS_PASSED -lt 300 ]; do
+  SPINNER_CHAR="${SPINNER:$(( SECONDS_PASSED % 10 )):1}"
+  echo -ne "\r$SPINNER_CHAR Initializing build... (${SECONDS_PASSED}s)"
+  sleep 1
+  SECONDS_PASSED=$((SECONDS_PASSED + 1))
+  
+  # Check if we have the build URL already
+  if grep -q "https://expo.dev/accounts/" "$BUILD_ID_FILE" 2>/dev/null; then
+    BUILD_URL=$(grep -o "https://expo.dev/accounts/[^ ]*" "$BUILD_ID_FILE" | head -1)
+    if [ ! -z "$BUILD_URL" ]; then
+      echo -e "\nBuild successfully initiated!"
+      echo "Build URL: $BUILD_URL"
+      echo "You can monitor the build progress at the URL above."
+      rm "$BUILD_ID_FILE"
+      exit 0
+    fi
+  fi
+done
+
+# Check if we timed out or if the build failed
+if [ $SECONDS_PASSED -ge 300 ]; then
+  echo -e "\nBuild initialization taking longer than expected (timed out after 5 minutes)."
+  echo "The build might still be running in the EAS servers."
+  echo "Please check your EAS dashboard for status."
+elif ! kill -0 $BUILD_PID 2>/dev/null; then
+  # Check if the process completed and we missed catching the URL
+  if grep -q "https://expo.dev/accounts/" "$BUILD_ID_FILE" 2>/dev/null; then
+    BUILD_URL=$(grep -o "https://expo.dev/accounts/[^ ]*" "$BUILD_ID_FILE" | head -1)
+    if [ ! -z "$BUILD_URL" ]; then
+      echo -e "\nBuild successfully initiated!"
+      echo "Build URL: $BUILD_URL"
+      echo "You can monitor the build progress at the URL above."
+      rm "$BUILD_ID_FILE"
+      exit 0
+    fi
+  fi
+  
+  # Process ended but we didn't find a URL
+  echo -e "\nBuild process ended unexpectedly. Checking for errors..."
+  cat "$BUILD_ID_FILE"
+  echo "Common issues:"
+  echo "  - Invalid EXPO_TOKEN or authentication problems"
+  echo "  - Project ID not found or incorrect in app.config.js"
+  echo "  - Network connectivity issues"
+  echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
+  rm "$BUILD_ID_FILE"
+  exit 1
 fi
 
+# Clean up
+rm "$BUILD_ID_FILE"
+
+# If we get here, the build is still running but we didn't find a URL yet
 echo "======================================================================================="
-echo "Build successfully initiated!"
-echo "Follow the URL provided above to monitor build progress."
-echo "Once completed, you can download the APK from the provided URL."
+echo "Build process started but URL not detected yet."
+echo "The build is likely still initializing in EAS servers."
+echo "Please check your EAS dashboard at https://expo.dev/accounts to monitor your build."
+echo "Once completed, you can download the APK from your EAS dashboard."
 echo "======================================================================================="
