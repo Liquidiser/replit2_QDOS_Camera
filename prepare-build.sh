@@ -59,6 +59,8 @@ cp README.md "$BUILD_DIR/" 2>/dev/null || touch "$BUILD_DIR/README.md"
 cp API_DOCUMENTATION.md "$BUILD_DIR/" 2>/dev/null || echo "API_DOCUMENTATION.md not found"
 cp APP_STRUCTURE.md "$BUILD_DIR/" 2>/dev/null || echo "APP_STRUCTURE.md not found"
 cp BUILDING_APK.md "$BUILD_DIR/" 2>/dev/null || echo "BUILDING_APK.md not found"
+cp DEVELOPMENT_GUIDE.md "$BUILD_DIR/" 2>/dev/null || echo "DEVELOPMENT_GUIDE.md not found"
+cp SUMMARY.md "$BUILD_DIR/" 2>/dev/null || echo "SUMMARY.md not found"
 
 # Create enhanced build instructions
 echo "Creating build instructions..."

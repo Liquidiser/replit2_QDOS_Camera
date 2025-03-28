@@ -17,11 +17,14 @@ A React Native mobile application that provides an interactive and engaging medi
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+For building from the source package:
+- Node.js (v18 or higher)
 - Java Development Kit (JDK 11 or higher)
-- Android Studio and Android SDK
-- React Native CLI
-- EAS CLI (for cloud builds)
+- Android Studio with Android SDK
+- Android device or emulator (API level 29+)
+
+For cloud builds (optional):
+- EAS CLI
   - Install with: `npm install -g eas-cli`
   - Configure with EAS project ID: `12702e56-bc25-4c1d-8523-66ad33a93e77`
 
@@ -73,17 +76,32 @@ The application follows a feature-based architecture:
 
 For more detailed information, see [APP_STRUCTURE.md](APP_STRUCTURE.md).
 
-## API Documentation
+## Project Documentation
 
-The app interacts with the QDOS backend API. For detailed API documentation, refer to [API_DOCUMENTATION.md](API_DOCUMENTATION.md).
+This project includes comprehensive documentation:
+
+- [SUMMARY.md](SUMMARY.md) - Quick overview of all documentation and build options
+- [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - Detailed API documentation
+- [APP_STRUCTURE.md](APP_STRUCTURE.md) - Code structure and architecture
+- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Step-by-step setup guide
+- [BUILDING_APK.md](BUILDING_APK.md) - Comprehensive build instructions
 
 ## Building the App
+
+### Source Package (Recommended)
+
+The easiest way to build and test the app is using the provided source package:
+
+1. Download the `qdos-camera-source.zip` file (15MB)
+2. Extract and follow the instructions in [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)
+
+The source package contains all necessary files to build the app on your local machine without needing to set up Git or clone the repository.
 
 ### Quick Build Options
 
 Several build scripts are available to simplify the build process:
 
-1. **EAS Cloud Build** (Recommended):
+1. **EAS Cloud Build**:
    ```bash
    # Make script executable
    chmod +x eas-build.sh
@@ -115,7 +133,9 @@ Several build scripts are available to simplify the build process:
    ./prepare-build.sh
    ```
 
-For comprehensive build documentation, see [BUILDING_APK.md](BUILDING_APK.md).
+For comprehensive build documentation, see:
+- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Step-by-step guide for new developers
+- [BUILDING_APK.md](BUILDING_APK.md) - Advanced building options
 
 ## Usage Flow
 

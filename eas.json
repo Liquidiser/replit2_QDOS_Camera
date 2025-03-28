@@ -1,7 +1,8 @@
 {
   "cli": {
     "version": ">= 5.9.1",
-    "appVersionSource": "remote"
+    "appVersionSource": "remote",
+    "requireCommit": false
   },
   "build": {
     "development": {
@@ -9,7 +10,15 @@
       "distribution": "internal",
       "android": {
         "gradleCommand": ":app:assembleDebug",
-        "buildType": "apk"
+        "buildType": "apk",
+        "withoutCredentials": true
+      },
+      "env": {
+        "ENVIRONMENT": "development"
+      },
+      "channel": "development",
+      "cache": {
+        "disabled": false
       }
     },
     "preview": {
