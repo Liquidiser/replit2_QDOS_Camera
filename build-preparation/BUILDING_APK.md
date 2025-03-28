@@ -170,18 +170,40 @@ android/app/build/outputs/bundle/release/app-release.aab
 - Test permissions, camera functionality, and network connectivity
 - Verify QR code scanning works in various lighting conditions
 
-## Using EAS Cloud Builds (Simplified Approach)
+## Source Package (Recommended Approach)
 
-If you can't build locally due to environment constraints, you can use Expo Application Services (EAS) for cloud-based builds. This project includes a simplified script for EAS builds.
+The easiest way to build and test the app is using the provided source package `qdos-camera-source.zip`. For detailed instructions, please refer to [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md).
+
+## Using EAS Cloud Builds
+
+If you can't build locally due to environment constraints, you can use Expo Application Services (EAS) for cloud-based builds. This project includes multiple scripts to simplify the EAS build process.
 
 ### Prerequisites
 
 1. **Expo Account** - Sign up at https://expo.dev/signup
-2. **Expo CLI and EAS CLI** - These will be installed automatically by our script if needed
+2. **Expo CLI and EAS CLI** - These will be installed automatically by our scripts if needed
 
-### Option 1: Using the Provided Build Script (Recommended)
+### Option 1: Using the Standalone Build Script (Recommended)
 
-We've created a convenience script to simplify the EAS build process:
+The simplest approach is to use our standalone build script:
+
+```bash
+# Make the script executable (first time only)
+chmod +x build-standalone.sh
+
+# Run the script
+./build-standalone.sh
+```
+
+This script will:
+1. Set the necessary environment variables
+2. Trigger a non-interactive EAS build with the preview profile
+3. Submit the build without waiting for completion
+4. Provide you with a dashboard link where you can monitor and download the build
+
+### Option 2: Using the Advanced Build Script
+
+For more control over the build process:
 
 ```bash
 # Make the script executable (first time only)
@@ -196,13 +218,13 @@ The script accepts the following build profiles:
 - `preview` - For internal testing APKs (default)
 - `production` - For Play Store app bundles
 
-The script will:
-1. Check if EAS CLI is installed and install it if needed
-2. Verify you're logged in to EAS and prompt for login if needed
-3. Trigger the build with the specified profile
-4. Provide a URL where you can monitor build progress and download the APK
+This script provides more interactive features:
+1. Checks if EAS CLI is installed and installs it if needed
+2. Verifies you're logged in to EAS and prompts for login if needed
+3. Triggers the build with the specified profile
+4. Provides a URL where you can monitor build progress and download the APK
 
-### Option 2: Manual EAS Build Process
+### Option 3: Manual EAS Build Process
 
 If you prefer to run the commands manually:
 
@@ -280,9 +302,19 @@ This project includes an enhanced `eas.json` configuration:
 - If you have project ID issues, you may need to run `eas project:init` to create a new project
   - Current project ID: `12702e56-bc25-4c1d-8523-66ad33a93e77`
 
-### Building Outside of Replit (Extract Method)
+### Building Outside of Replit
 
-Due to resource limitations in Replit, you may need to extract the project and build it elsewhere:
+Due to resource limitations in Replit, you need to extract the project and build it elsewhere. There are two approaches:
+
+#### Method 1: Using the Source Package (Easiest, Recommended)
+
+1. Download the `qdos-camera-source.zip` file (15MB) from this Replit workspace
+2. Extract it on your local machine
+3. Follow the detailed instructions in [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)
+
+#### Method 2: Using the Preparation Script
+
+If you want to customize what files are included:
 
 1. **Run the prepare-build script**:
    ```bash
@@ -295,13 +327,23 @@ Due to resource limitations in Replit, you may need to extract the project and b
 
 2. This will create a clean copy of all necessary files in the `build-preparation` directory.
 
-3. Download this directory from Replit.
+3. Zip and download this directory from Replit.
 
 4. On your local machine with Android SDK installed:
    ```bash
    cd build-preparation
    npm install
-   npx react-native build-android
-   # Or use EAS:
+   
+   # Option 1: Run with React Native CLI
+   npx react-native run-android
+   
+   # Option 2: Build debug APK manually
+   cd android
+   ./gradlew assembleDebug
+   
+   # Option 3: Use Expo EAS for local building
+   npm install -g eas-cli
    eas build --platform android --profile preview --local
    ```
+
+Both methods provide all the necessary files for building, but the source package (Method 1) is pre-configured and ready to use.

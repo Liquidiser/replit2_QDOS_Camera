@@ -13,7 +13,8 @@ export default {
     backgroundColor: "#ffffff"
   },
   updates: {
-    fallbackToCacheTimeout: 0
+    fallbackToCacheTimeout: 0,
+    url: "https://u.expo.dev/12702e56-bc25-4c1d-8523-66ad33a93e77"
   },
   assetBundlePatterns: [
     "**/*"
@@ -45,6 +46,9 @@ export default {
     eas: {
       projectId: "12702e56-bc25-4c1d-8523-66ad33a93e77"
     }
+  },
+  runtimeVersion: {
+    policy: "sdkVersion"
   },
   sdkVersion: "50.0.0"
 };

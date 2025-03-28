@@ -1,5 +1,5 @@
 QDOS Camera App Build Information
 ================================
 Version: 1.0.0
-Build prepared on: Fri 28 Mar 2025 04:50:41 PM UTC
+Build prepared on: Fri 28 Mar 2025 05:50:48 PM UTC
 React Native version: ^0.78.1
