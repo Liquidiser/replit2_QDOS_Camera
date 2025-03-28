@@ -1,0 +1,4 @@
+QDOS Camera App Build Information
+================================
+Version: 1.0.0
+Build prepared on: Fri 28 Mar 2025 04:29:14 PM UTC

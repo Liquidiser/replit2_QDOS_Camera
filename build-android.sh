@@ -1,55 +1,69 @@
 #!/bin/bash
 
-# Script to build Android APK
+# Script to build Android APK directly
 
 # Show help
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
   echo "Usage: ./build-android.sh [debug|release]"
   echo "Options:"
   echo "  debug    Build a debug APK (default)"
-  echo "  release  Build a release APK"
+  echo "  release  Build a release APK (requires signing configuration)"
   exit 0
 fi
 
 # Set build type
 BUILD_TYPE=${1:-debug}
-echo "Building $BUILD_TYPE APK..."
+echo "Starting Android build ($BUILD_TYPE)..."
 
-# Clean any previous builds
-echo "Cleaning previous builds..."
-cd android && ./gradlew clean
-
-# Build the APK based on the specified type
-if [ "$BUILD_TYPE" == "debug" ]; then
-  echo "Building debug APK..."
-  ./gradlew assembleDebug
-  APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
-elif [ "$BUILD_TYPE" == "release" ]; then
-  echo "Building release APK..."
-  ./gradlew assembleRelease
-  APK_PATH="app/build/outputs/apk/release/app-release.apk"
-else
-  echo "Invalid build type. Use 'debug' or 'release'."
+# Check environment
+if [ -z "$ANDROID_HOME" ]; then
+  echo "ANDROID_HOME environment variable is not set."
+  echo "Please set it to your Android SDK location."
   exit 1
+fi
+
+# Navigate to android directory
+cd android || { echo "Android directory not found"; exit 1; }
+
+# Clean project
+echo "Cleaning project..."
+./gradlew clean
+
+# Build APK
+echo "Building $BUILD_TYPE APK..."
+if [ "$BUILD_TYPE" == "release" ]; then
+  ./gradlew assembleRelease
+else
+  ./gradlew assembleDebug
 fi
 
 # Check if build was successful
-if [ -f "$APK_PATH" ]; then
-  echo "Build successful!"
-  echo "APK is available at: $APK_PATH"
+if [ $? -eq 0 ]; then
+  # Determine output path
+  if [ "$BUILD_TYPE" == "release" ]; then
+    APK_PATH="app/build/outputs/apk/release/app-release.apk"
+  else
+    APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+  fi
   
-  # Calculate APK size
-  APK_SIZE=$(du -h "$APK_PATH" | cut -f1)
-  echo "APK size: $APK_SIZE"
-  
-  # Optional: Install on connected device
-  if [ "$2" == "--install" ]; then
-    echo "Installing APK on connected device..."
-    adb install -r "$APK_PATH"
+  # Check if APK was created
+  if [ -f "$APK_PATH" ]; then
+    echo "============================="
+    echo "Build successful!"
+    echo "APK location: $(pwd)/$APK_PATH"
+    echo "============================="
+    
+    # Copy to root directory for easier access
+    cp "$APK_PATH" "../qdos-camera-$BUILD_TYPE.apk"
+    echo "APK also copied to: ../qdos-camera-$BUILD_TYPE.apk"
+  else
+    echo "Error: APK not found at expected location."
+    exit 1
   fi
 else
-  echo "Build failed. Check the logs for errors."
+  echo "Build failed. Check the logs above for errors."
   exit 1
 fi
 
+# Return to root directory
 cd ..

@@ -1,104 +1,173 @@
 # QDOS Camera App
 
-A React Native mobile application that provides an interactive media capture and sharing experience through QR code scanning and Rive animation overlays.
+A React Native mobile application that provides an interactive and engaging media capture experience through advanced QR code scanning and dynamic Rive animation overlays.
 
-## Overview
-
-This application enables users to scan QR codes, retrieve information from the QDOS API, display Rive animations as overlays, capture photos and videos, and share content via Twitter. The app is designed primarily for Android devices.
+![QDOS Camera App](generated-icon.png)
 
 ## Features
 
-- **QR Code Scanning**: Using the device camera, scan QR codes to retrieve detailed information from the QDOS API
-- **Rive Animation Overlays**: Display interactive animations as overlays on the camera view
-- **Media Capture**: Take photos and record videos with QR information overlaid
-- **Local Storage**: Save captured media to the device for later use
-- **Media Upload**: Upload captured media to a server with progress tracking
-- **Social Sharing**: Share content on Twitter with customizable messages
+- 📱 Advanced camera interface with QR code scanning
+- 🎞️ Photo and video capture functionality
+- 🔄 Dynamic Rive animations as camera overlays
+- 📊 Local media storage and management
+- ☁️ Secure media upload to backend servers
+- 🐦 Twitter integration for social sharing
+- 📋 QR code information retrieval and display
+- 📱 Optimized for Android devices
 
-## Technical Stack
+## Prerequisites
 
-- React Native
-- React Navigation for app navigation
-- Rive animations for interactive overlays
-- Vision Camera for camera functionality
-- ML Kit (via native module) for QR code detection
-- Axios for API communication
-- React Native FS for file system operations
-- React Native Background Upload for handling uploads
-
-## Building the Android APK
-
-### Prerequisites
-
-- Node.js 18 or later
-- Java Development Kit (JDK) 11 or later
+- Node.js (v14 or higher)
+- Java Development Kit (JDK 11 or higher)
 - Android Studio and Android SDK
-- Android SDK Build-Tools, Platform Tools, and Platform SDK
-- Gradle 7.4.2 or compatible version
+- React Native CLI
 
-### Setup Development Environment
+## Installation
 
-1. Clone the repository to your local machine
-2. Install dependencies:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/qdos-camera-app.git
+   cd qdos-camera-app
    ```
+
+2. Install dependencies:
+   ```bash
    npm install
    ```
-3. Make sure Android SDK is properly configured with the following components:
-   - Android SDK Platform 34
-   - Android SDK Build-Tools 34.0.0
-   - Android SDK Platform-Tools
-   - NDK 25.1.8937393
 
-### Building a Debug APK
-
-1. Connect an Android device or start an emulator
-2. Navigate to the project root directory
-3. Run the following command to build a debug APK:
+3. Set up environment variables:
+   Create a `.env` file in the root directory with the following content:
    ```
-   cd android && ./gradlew assembleDebug
-   ```
-4. The debug APK will be generated at:
-   ```
-   android/app/build/outputs/apk/debug/app-debug.apk
+   API_KEY=your_api_key_here
+   API_URL=https://qdos-api.liquidiser.co.uk/api
    ```
 
-### Building a Release APK
-
-1. Create a keystore file for signing (if you don't have one):
-   ```
-   keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
-   ```
-2. Update the signing configuration in `android/app/build.gradle` with your keystore details
-3. Build the release APK:
-   ```
-   cd android && ./gradlew assembleRelease
-   ```
-4. The release APK will be generated at:
-   ```
-   android/app/build/outputs/apk/release/app-release.apk
+4. Start Metro bundler:
+   ```bash
+   npx react-native start
    ```
 
-## API Configuration
+5. Run the app on Android:
+   ```bash
+   npx react-native run-android
+   ```
 
-The app communicates with the QDOS API. In App.tsx, you can modify the `QDOS_API_KEY` value to use your own API key.
+## Project Structure
 
-## Testing
+The application follows a feature-based architecture:
 
-The application has been designed with testing in mind:
-- Unit tests for business logic
-- Component tests for UI elements
-- Integration tests for API communication
-
-To run tests:
 ```
-npm test
+/src
+  /api           - API service modules
+  /components    - Reusable UI components
+  /context       - Global state management
+  /hooks         - Custom React hooks
+  /navigation    - Navigation configuration
+  /screens       - Screen components
+  /types         - TypeScript type definitions
+  /utils         - Utility functions
 ```
 
-## Troubleshooting Build Issues
+For more detailed information, see [APP_STRUCTURE.md](APP_STRUCTURE.md).
 
-If you encounter build issues, try the following:
-1. Clean the Gradle cache: `cd android && ./gradlew clean`
-2. Check Java version compatibility (JDK 11 is recommended)
-3. Make sure all dependencies are properly installed
-4. Increase Gradle memory allocation in `android/gradle.properties` if needed
-5. Verify that all required Android SDK components are installed
+## API Documentation
+
+The app interacts with the QDOS backend API. For detailed API documentation, refer to [API_DOCUMENTATION.md](API_DOCUMENTATION.md).
+
+## Building the App
+
+### Quick Build Options
+
+Several build scripts are available to simplify the build process:
+
+1. **EAS Cloud Build** (Recommended):
+   ```bash
+   # Make script executable
+   chmod +x eas-build.sh
+   
+   # Run EAS build with preview profile
+   ./eas-build.sh preview
+   ```
+
+2. **Local Android Build**:
+   ```bash
+   # Make script executable
+   chmod +x build-android.sh
+   
+   # Build debug APK
+   ./build-android.sh debug
+   
+   # Or build release APK
+   ./build-android.sh release
+   ```
+
+3. **External Build Preparation**:
+   ```bash
+   # Make script executable
+   chmod +x prepare-build.sh
+   
+   # Prepare files for external building
+   ./prepare-build.sh
+   ```
+
+For comprehensive build documentation, see [BUILDING_APK.md](BUILDING_APK.md).
+
+## Usage Flow
+
+1. **Launch the app** - The app opens to the home screen
+2. **Scan QR Code** - Point camera at a QR code to scan
+3. **View Overlay** - See Rive animation overlay on camera view
+4. **Capture Media** - Take photos or record video with the overlay
+5. **Preview & Edit** - Review captured media
+6. **Upload & Share** - Upload to server and share to Twitter
+
+## Key Components
+
+- **Camera Interface** - Uses `react-native-vision-camera` for advanced camera features
+- **QR Scanner** - Custom QR detection with real-time processing
+- **Rive Animations** - Interactive animations using `rive-react-native`
+- **Media Management** - Local storage using `react-native-fs`
+- **Background Upload** - Efficient uploads with `react-native-background-upload`
+
+## Troubleshooting
+
+### Common Issues
+
+- **Camera Permission Denied** - Go to device settings and enable camera permissions for the app
+- **Storage Permission Denied** - Enable storage permissions in device settings
+- **QR Code Not Scanning** - Ensure adequate lighting and QR code is clearly visible
+- **Upload Failures** - Check network connection and API key configuration
+
+### Debugging
+
+For development and debugging:
+
+1. Enable developer mode on your device
+2. Connect via USB debugging
+3. Use Chrome DevTools for remote debugging
+4. Check Metro bundler logs for JavaScript errors
+5. Review device logs for native-side issues
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- [React Native](https://reactnative.dev/)
+- [Rive](https://rive.app/)
+- [Vision Camera](https://mrousavy.com/react-native-vision-camera/)
+- [React Navigation](https://reactnavigation.org/)
+
+## Contact
+
+For questions or support, please contact:
+- Project Link: [https://github.com/yourusername/qdos-camera-app](https://github.com/yourusername/qdos-camera-app)

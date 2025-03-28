@@ -1,17 +1,7 @@
 {
   "name": "workspace",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "react-native start",
-    "android": "react-native run-android",
-    "ios": "react-native run-ios"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "description": "QDOS Camera App",
   "dependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
@@ -49,5 +39,10 @@
     "react-native-vision-camera": "^4.6.4",
     "rive-react-native": "^9.2.0",
     "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "build": "cd android && ./gradlew assembleDebug",
+    "build:release": "cd android && ./gradlew assembleRelease",
+    "eas-build": "eas build --platform android --profile preview"
   }
 }
