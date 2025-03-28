@@ -1,7 +1,8 @@
 {
   "name": "workspace",
   "version": "1.0.0",
-  "description": "QDOS Camera App",
+  "description": "QDOS Camera App for Android",
+  "main": "index.js",
   "dependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
@@ -41,8 +42,11 @@
     "typescript": "^5.8.2"
   },
   "scripts": {
+    "start": "react-native start",
     "build": "cd android && ./gradlew assembleDebug",
     "build:release": "cd android && ./gradlew assembleRelease",
-    "eas-build": "eas build --platform android --profile preview"
+    "eas-build": "eas build --platform android --profile preview",
+    "eas-build:dev": "eas build --platform android --profile development",
+    "eas-build:prod": "eas build --platform android --profile production"
   }
 }

@@ -1,42 +1,103 @@
-# How to Build QDOS Camera App
+# How to Build the QDOS Camera App
 
-Follow these steps to build the app on your local machine:
+This document provides instructions for building the QDOS Camera App APK locally on your machine.
+
+## Quick Start (For Experienced Developers)
+
+1. `npm install`
+2. Copy `.env.example` to `.env` and configure if needed
+3. Build options:
+   - Debug APK: `npm run build`
+   - Release APK: `npm run build:release`
+   - EAS Cloud Build: `npm run eas-build` or `./eas-build.sh preview`
 
 ## Prerequisites
 
-1. Install Node.js (v14+) and npm
-2. Install JDK 11
-3. Install Android Studio and Android SDK
-4. Configure Android SDK Environment Variables
-5. Install React Native CLI globally: `npm install -g react-native-cli`
+1. **Node.js** - Version 18.x or newer recommended
+   - Download from: https://nodejs.org/
 
-## Steps to Build
+2. **Java Development Kit (JDK)** - Version 11 required for Android development
+   - Download from: https://adoptium.net/ (OpenJDK)
 
-1. Clone the entire repository: `git clone https://github.com/Liquidiser/replit2_QDOS_Camera.git`
-2. Navigate to project directory: `cd replit2_QDOS_Camera`
-3. Install dependencies: `npm install`
-4. Configure .env file (copy from .env.example and add your values)
-5. For debug APK:
+3. **Android Development Environment**:
+   - Android Studio (for SDK Manager): https://developer.android.com/studio
+   - Required SDK components:
+     - Android SDK Platform 34
+     - Android SDK Build-Tools 34.0.0
+     - Android SDK Platform-Tools
+     - NDK 25.1.8937393
+
+4. **Environment Variables**:
+   - ANDROID_HOME: path to Android SDK
+   - JAVA_HOME: path to JDK installation
+
+## Detailed Build Steps
+
+### Local Build
+
+1. Install dependencies:
+   ```bash
+   npm install
    ```
+
+2. Configure environment:
+   ```bash
+   # Copy example environment file
+   cp .env.example .env
+   
+   # Edit .env if needed
+   nano .env
+   ```
+
+3. Build APK:
+   
+   For debug APK:
+   ```bash
    cd android
    ./gradlew assembleDebug
    ```
-6. For release APK (needs signing configuration):
-   ```
+   
+   For release APK:
+   ```bash
    cd android
    ./gradlew assembleRelease
    ```
 
-The built APK will be available at:
-- Debug: `android/app/build/outputs/apk/debug/app-debug.apk`
-- Release: `android/app/build/outputs/apk/release/app-release.apk`
+4. Locate the built APK:
+   - Debug: `android/app/build/outputs/apk/debug/app-debug.apk`
+   - Release: `android/app/build/outputs/apk/release/app-release.apk`
 
-## Alternative: EAS Build
+### Cloud Build with EAS
 
-For cloud-based builds:
+For a simpler build process without local environment setup:
 
-1. Install EAS CLI: `npm install -g eas-cli`
-2. Login to Expo: `eas login`
-3. Run build: `eas build --platform android --profile preview`
+1. Install EAS CLI:
+   ```bash
+   npm install -g eas-cli
+   ```
 
-Follow the URL in the console to track build progress and download the APK.
+2. Login to Expo:
+   ```bash
+   eas login
+   ```
+
+3. Run the build:
+   ```bash
+   # Using convenience script (recommended)
+   ./eas-build.sh preview
+   
+   # Or directly with EAS CLI
+   eas build --platform android --profile preview
+   ```
+
+4. Follow the URL in the console to track build progress and download the APK.
+
+## Troubleshooting
+
+- **"SDK location not found"**: Set ANDROID_HOME environment variable
+- **Gradle build failures**: Check for JDK version compatibility (JDK 11 required)
+- **Missing SDK components**: Use Android Studio's SDK Manager to install required components
+- **Build timeouts**: Try increasing Gradle memory in `android/gradle.properties`:
+  `org.gradle.jvmargs=-Xmx4g`
+
+For more detailed information, see the full BUILDING_APK.md in the project root.
