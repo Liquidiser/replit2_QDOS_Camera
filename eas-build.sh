@@ -64,15 +64,35 @@ fi
 # Create a new build
 echo "Triggering EAS build for Android..."
 echo "======================================================================================="
-npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive || {
-  echo "Build initiation failed. Check the error message above."
-  echo "Common issues:"
-  echo "  - Invalid EXPO_TOKEN or authentication problems"
-  echo "  - Project ID not found or incorrect in app.config.js"
-  echo "  - Network connectivity issues"
-  echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
-  exit 1
-}
+echo "EAS build typically takes at least 90 seconds to start. Setting timeout to 120 seconds..."
+
+# Use timeout command with fallback to perl for cross-platform compatibility
+if command -v timeout &> /dev/null; then
+  timeout 120s npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive || {
+    echo "Build initiation timed out or failed after waiting 120 seconds."
+    echo "This is normal if running in environments with limited connectivity or resources."
+    echo "The build might still be running in the EAS servers. Check your EAS dashboard."
+    echo "Common issues:"
+    echo "  - Invalid EXPO_TOKEN or authentication problems"
+    echo "  - Project ID not found or incorrect in app.config.js"
+    echo "  - Network connectivity issues"
+    echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
+    exit 1
+  }
+else
+  # Fallback to perl timeout for environments without the timeout command
+  perl -e 'alarm 120; exec @ARGV' npx eas-cli build --platform android --profile $BUILD_PROFILE --non-interactive || {
+    echo "Build initiation timed out or failed after waiting 120 seconds."
+    echo "This is normal if running in environments with limited connectivity or resources."
+    echo "The build might still be running in the EAS servers. Check your EAS dashboard."
+    echo "Common issues:"
+    echo "  - Invalid EXPO_TOKEN or authentication problems"
+    echo "  - Project ID not found or incorrect in app.config.js"
+    echo "  - Network connectivity issues"
+    echo "Try running with 'npx eas-cli build --platform android --profile $BUILD_PROFILE' directly for more details."
+    exit 1
+  }
+fi
 
 echo "======================================================================================="
 echo "Build successfully initiated!"
