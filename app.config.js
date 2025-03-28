@@ -6,6 +6,7 @@ export default {
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
+  owner: "liquidiser",
   splash: {
     image: "./assets/splash.png",
     resizeMode: "contain",
@@ -42,10 +43,8 @@ export default {
   ],
   extra: {
     eas: {
-      projectId: "0bccf600-857a-4781-a32c-6adbb5120f27"
+      projectId: "12702e56-bc25-4c1d-8523-66ad33a93e77"
     }
   },
-  runtimeVersion: {
-    policy: "appVersion"
-  }
+  sdkVersion: "50.0.0"
 };

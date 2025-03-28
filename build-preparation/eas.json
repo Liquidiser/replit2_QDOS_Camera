@@ -16,11 +16,13 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "withoutCredentials": true
+        "withoutCredentials": true,
+        "gradleCommand": ":app:assembleRelease"
       },
       "env": {
         "ENVIRONMENT": "preview"
       },
+      "channel": "preview",
       "autoIncrement": true
     },
     "production": {
@@ -30,6 +32,7 @@
       "env": {
         "ENVIRONMENT": "production"
       },
+      "channel": "production",
       "autoIncrement": true
     }
   },

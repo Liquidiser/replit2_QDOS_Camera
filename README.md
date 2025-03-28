@@ -21,6 +21,9 @@ A React Native mobile application that provides an interactive and engaging medi
 - Java Development Kit (JDK 11 or higher)
 - Android Studio and Android SDK
 - React Native CLI
+- EAS CLI (for cloud builds)
+  - Install with: `npm install -g eas-cli`
+  - Configure with EAS project ID: `12702e56-bc25-4c1d-8523-66ad33a93e77`
 
 ## Installation
 
@@ -88,6 +91,8 @@ Several build scripts are available to simplify the build process:
    # Run EAS build with preview profile
    ./eas-build.sh preview
    ```
+   
+   Current EAS Project ID: `12702e56-bc25-4c1d-8523-66ad33a93e77`
 
 2. **Local Android Build**:
    ```bash
