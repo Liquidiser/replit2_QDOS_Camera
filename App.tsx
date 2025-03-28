@@ -5,9 +5,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import { AppProvider } from './src/context/AppContext';
 import { setApiKey } from './src/api/apiClient';
+import { APP_CONFIG } from './src/config';
 
 // API key management
 // In a production app, this would be stored in secure storage
+// or fetched from environment variables or secure storage
 const QDOS_API_KEY = 'DEMO_API_KEY'; // For demo purposes
 
 // Ignore specific warnings (if necessary)

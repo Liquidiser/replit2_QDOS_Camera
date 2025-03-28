@@ -87,6 +87,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -100,6 +101,8 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+            debuggable true
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -108,6 +111,11 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+    }
+    
+    // Needed to handle potential method limit exceeded errors
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 
     // applicationVariants are e.g. debug, release
@@ -131,6 +139,9 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    // MultiDex support
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
     // JSC from React Native
     implementation jscFlavor
 

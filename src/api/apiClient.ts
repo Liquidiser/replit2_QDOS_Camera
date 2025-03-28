@@ -1,28 +1,17 @@
 import axios from 'axios';
 import { ApiError, ApiResponse } from '../types';
-
-import { Platform } from 'react-native';
-
-// Base URL for the API
-// Using the correct API URL as specified
-const BASE_URL = Platform.select({
-  android: 'https://admin.qdos.bz/api/',
-  ios: 'https://admin.qdos.bz/api/',
-  default: 'https://admin.qdos.bz/api/'
-});
+import { API_CONFIG } from '../config';
 
 // In a production app, the API key would be stored securely
 // The API key should be provided by the user and stored in secure storage
 // This is a placeholder that will be replaced with the actual key from secure storage
 let API_KEY = ''; // This should be set via a secure method at runtime
 
-// Create axios instance
+// Create axios instance with configuration from config.ts
 const apiClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 30000, // 30 seconds
-  headers: {
-    'Content-Type': 'application/json',
-  }
+  baseURL: API_CONFIG.BASE_URL,
+  timeout: API_CONFIG.TIMEOUT,
+  headers: API_CONFIG.DEFAULT_HEADERS
 });
 
 // Function to get API key
