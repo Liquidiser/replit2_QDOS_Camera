@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export default {
   name: "QDOS Camera",
-  slug: "qdos-camera-app",
+  slug: "replit2qdoscamera",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -14,7 +14,7 @@ export default {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/12702e56-bc25-4c1d-8523-66ad33a93e77"
+    url: "https://u.expo.dev/9db4926b-e42d-483e-9553-3da6433c03dd"
   },
   assetBundlePatterns: [
     "**/*"
@@ -44,7 +44,7 @@ export default {
   ],
   extra: {
     eas: {
-      projectId: "12702e56-bc25-4c1d-8523-66ad33a93e77"
+      projectId: "9db4926b-e42d-483e-9553-3da6433c03dd"
     }
   },
   runtimeVersion: {

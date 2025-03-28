@@ -300,7 +300,7 @@ This project includes an enhanced `eas.json` configuration:
 - If you encounter credential issues, use `eas credentials` to manage them
 - For build configuration problems, refer to the [EAS documentation](https://docs.expo.dev/build/introduction/)
 - If you have project ID issues, you may need to run `eas project:init` to create a new project
-  - Current project ID: `12702e56-bc25-4c1d-8523-66ad33a93e77`
+  - Current project ID: `9db4926b-e42d-483e-9553-3da6433c03dd`
 
 ### Building Outside of Replit
 
